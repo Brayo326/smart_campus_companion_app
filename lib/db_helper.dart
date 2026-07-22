@@ -16,6 +16,15 @@ class DBHelper {
       await db.execute(
           "CREATE TABLE students(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, course TEXT)"
       );
+      await db.execute('''
+      CREATE TABLE Attendance(
+      AttendanceID INTEGER PRIMARY KEY AUTOINCREMENT,
+      StudentID INTEGER,
+      Date TEXT,
+      Status TEXT,
+      FOREIGN KEY(StudentID) REFERENCES Students(StudentID)
+      )
+      ''');
     });
   }
 
@@ -32,5 +41,13 @@ class DBHelper {
   Future<int> deleteStudent(int id) async {
     final db = await database;
     return await db.delete("students", where: "id = ?", whereArgs: [id]);
+  }
+  Future<int> insertAttendance (Map<String, dynamic>row) async {
+    final db = await database;
+    return await db.insert('Attendance', row);
+  }
+  Future<List<Map<String, dynamic>>> getAttendance() async {
+    final db = await database;
+    return await db.query('Attendance');
   }
 }
